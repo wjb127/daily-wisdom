@@ -148,6 +148,104 @@ class _QuoteListScreenState extends State<QuoteListScreen> {
     }
   }
 
+  void _editQuote(int index) {
+    _quoteController.text = quotes[index].text;
+    _authorController.text = quotes[index].author;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('명언 수정'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: _quoteController,
+              decoration: const InputDecoration(
+                labelText: '명언을 입력하세요',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _authorController,
+              decoration: const InputDecoration(
+                labelText: '작가를 입력하세요',
+                border: OutlineInputBorder(),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _quoteController.clear();
+              _authorController.clear();
+            },
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (_quoteController.text.isNotEmpty && 
+                  _authorController.text.isNotEmpty) {
+                setState(() {
+                  quotes[index] = Quote(
+                    text: _quoteController.text,
+                    author: _authorController.text,
+                  );
+                });
+                
+                if (kIsWeb) {
+                  _saveWebQuotes();
+                } else {
+                  _saveQuotes();
+                }
+                
+                Navigator.pop(context);
+                _quoteController.clear();
+                _authorController.clear();
+              }
+            },
+            child: const Text('수정'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _deleteQuote(int index) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('명언 삭제'),
+        content: const Text('이 명언을 삭제하시겠습니까?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('취소'),
+          ),
+          TextButton(
+            onPressed: () {
+              setState(() {
+                quotes.removeAt(index);
+              });
+              
+              if (kIsWeb) {
+                _saveWebQuotes();
+              } else {
+                _saveQuotes();
+              }
+              
+              Navigator.pop(context);
+            },
+            child: const Text('삭제'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,6 +274,19 @@ class _QuoteListScreenState extends State<QuoteListScreen> {
                         fontSize: 14,
                         fontStyle: FontStyle.italic,
                       ),
+                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () => _editQuote(index),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => _deleteQuote(index),
+                        ),
+                      ],
                     ),
                   ),
                 );
