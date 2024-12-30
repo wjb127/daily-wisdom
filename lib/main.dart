@@ -187,6 +187,24 @@ class _QuoteListScreenState extends State<QuoteListScreen> {
           ),
           TextButton(
             onPressed: () {
+              setState(() {
+                quotes.removeAt(index);
+              });
+              
+              if (kIsWeb) {
+                _saveWebQuotes();
+              } else {
+                _saveQuotes();
+              }
+              
+              Navigator.pop(context);
+              _quoteController.clear();
+              _authorController.clear();
+            },
+            child: const Text('삭제', style: TextStyle(color: Colors.red)),
+          ),
+          TextButton(
+            onPressed: () {
               if (_quoteController.text.isNotEmpty && 
                   _authorController.text.isNotEmpty) {
                 setState(() {
@@ -208,38 +226,6 @@ class _QuoteListScreenState extends State<QuoteListScreen> {
               }
             },
             child: const Text('수정'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _deleteQuote(int index) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('명언 삭제'),
-        content: const Text('이 명언을 삭제하시겠습니까?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('취소'),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                quotes.removeAt(index);
-              });
-              
-              if (kIsWeb) {
-                _saveWebQuotes();
-              } else {
-                _saveQuotes();
-              }
-              
-              Navigator.pop(context);
-            },
-            child: const Text('삭제'),
           ),
         ],
       ),
@@ -275,18 +261,9 @@ class _QuoteListScreenState extends State<QuoteListScreen> {
                         fontStyle: FontStyle.italic,
                       ),
                     ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () => _editQuote(index),
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () => _deleteQuote(index),
-                        ),
-                      ],
+                    trailing: IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () => _editQuote(index),
                     ),
                   ),
                 );
