@@ -28,3 +28,7 @@
 
 개인정보 처리방침은 [여기](https://github.com/[your-username]/[repository-name]/blob/main/docs/privacy-policy.md)에서 확인하실 수 있습니다.
 
+## Copyright
+
+© 2024 Seungbeen Wi. All rights reserved.
+
