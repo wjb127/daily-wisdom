@@ -43,3 +43,7 @@ build/
 **/ios/Flutter/flutter_assets/
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
+
+# macOS specific
+.DS_Store
+.DS_Store?
